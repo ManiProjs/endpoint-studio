@@ -1,48 +1,67 @@
 import { create } from "zustand";
 
-type RequestStore = {
+type RequestState = {
   url: string;
   response: string;
+  status?: number;
+  latency?: number;
+  size?: number;
   loading: boolean;
 
   setUrl: (url: string) => void;
-  setResponse: (res: string) => void;
-  setLoading: (v: boolean) => void;
-
   sendRequest: () => Promise<void>;
 };
 
-export const useRequestStore = create<RequestStore>((set, get) => ({
+export const useRequestStore = create<RequestState>((set, get) => ({
   url: "https://api.github.com/users",
 
   response: "",
+
   loading: false,
 
   setUrl: (url) => set({ url }),
-  setResponse: (response) => set({ response }),
-  setLoading: (loading) => set({ loading }),
 
   sendRequest: async () => {
-    const { url } = get();
+    const url = get().url;
 
-    let parsed: URL;
+    if (!url.trim()) return;
+
+    set({
+      loading: true,
+
+      response: "",
+
+      status: undefined,
+
+      latency: undefined,
+
+      size: undefined,
+    });
+
+    const start = performance.now();
 
     try {
-        parsed = new URL(url);
-    } catch {
-        set({ response: "Invalid URL" });
-        return;
-    }
+      const res = await fetch(url);
 
-    set({ loading: true, response: "" });
-
-    try {
-      const res = await fetch(parsed.toString());
       const text = await res.text();
 
-      set({ response: text });
+      const end = performance.now();
+
+      set({
+        response: text,
+
+        status: res.status,
+
+        latency: Math.round(end - start),
+
+        size: new Blob([text]).size,
+      });
     } catch (err: any) {
-      set({ response: String(err) });
+      set({
+        response: String(err),
+
+        status: 0,
+      });
     } finally {
       set({ loading: false });
     }

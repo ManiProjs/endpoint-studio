@@ -11,9 +11,9 @@ import "@fontsource/jetbrains-mono/700.css";
 import { useRequestStore } from "./stores/request-store";
 
 function App() {
-  const { url, setUrl, sendRequest, response, loading } = 
+  const { url, setUrl, sendRequest, response, loading, status, latency, size } =
     useRequestStore();
-
+  
   return (
     <div className="h-screen w-screen overflow-hidden flex bg-[var(--background)] text-[var(--foreground)] font-sans">
       {/* Sidebar */}
@@ -63,8 +63,29 @@ function App() {
 
           {/* Response */}
           <div className="w-1/2 flex flex-col">
-            <div className="border-b border-[var(--border)] px-4 py-2 text-xs text-gray-400">
-              RESPONSE
+            <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-2 text-xs text-gray-400">
+              <div className="flex gap-3">
+                <span>
+                  Status:{" "}
+                  <span className="text-green-400 font-semibold">
+                    {status ?? "-"}
+                  </span>
+                </span>
+
+                <span>
+                  Time:{" "}
+                  <span className="text-blue-400 font-semibold">
+                    {latency ? `${latency} ms` : "-"}
+                  </span>
+                </span>
+
+                <span>
+                  Size:{" "}
+                  <span className="text-purple-400 font-semibold">
+                    {size ? `${size} B` : "-"}
+                  </span>
+                </span>
+              </div>
             </div>
 
             <div className="flex-1 overflow-auto p-4">
