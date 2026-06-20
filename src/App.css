@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #111827;
+  --panel: #f3f4f6;
+  --border: #d1d5db;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f1117;
+    --foreground: #f8fafc;
+    --panel: #161b22;
+    --border: #30363d;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
